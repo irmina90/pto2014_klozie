@@ -7,20 +7,22 @@ Debug/*
 release/*
 debug/*
 ipch/*
+Win32/*
+x64/*
 
 # Build and relase directories:
 build/*
 build*/*
 
 # Temporary files:
-vc100.pdb
+vc*.pdb
 
 Makefile
 Makefile.Release
 Makefile.Debug
 MySimpleGimp.pro.user
 MySimpleGimp.vcxproj.user
-MySimpleGimp.v11.suo
+MySimpleGimp.*.suo
 MySimpleGimp.sdf
 gen/*
 MySimpleGimp.opensdf
