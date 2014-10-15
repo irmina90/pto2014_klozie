@@ -1,5 +1,9 @@
 #include "bin_iterbimodal.h"
 
+#include "conversion_grayscale.h"
+#include "histogram_equalization.h"
+#include "../histogram.h"
+
 BinarizationIterBimodal::BinarizationIterBimodal(PNM* img) :
     Transformation(img)
 {
