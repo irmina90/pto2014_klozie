@@ -70,14 +70,14 @@ int Histogram::maximumValue(Channel selectedChannel = RGB)
 {
     int maxValue = 0, temp = 0;
     QHash<int, int>::const_iterator it;
-    QHash<int, int>* channel = get(selectedChannel);
+    QHash<int, int>* channel = Histogram::get(selectedChannel);
 
     if (selectedChannel == RGB)
     {
-        maxValue = maximumValue(RChannel);
-        temp = maximumValue(GChannel);
+        maxValue = Histogram::maximumValue(RChannel);
+        temp = Histogram::maximumValue(GChannel);
         if (temp > maxValue) maxValue = temp;
-        temp = maximumValue(BChannel);
+        temp = Histogram::maximumValue(BChannel);
         if(temp > maxValue) maxValue = temp;
     }
     else
