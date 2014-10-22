@@ -40,7 +40,7 @@ PNM* Correction::transform()
 
     // Iterate over image space
     for (int x=0; x<width; x++)
-        for (int y=0; y<height; y++)
+    {   for (int y=0; y<height; y++)
         {
             QRgb pixel = image->pixel(x,y); // Getting the pixel(x,y) value
 
@@ -53,7 +53,7 @@ PNM* Correction::transform()
             QColor newPixel = QColor(r,g,b);
             newImage->setPixel(x,y,newPixel.rgb());
         }
-
+    }
 
     return newImage;
 }
