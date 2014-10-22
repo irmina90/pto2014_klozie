@@ -21,8 +21,6 @@ PNM* Correction::transform()
 
     PNM* newImage = new PNM(width, height, image->format());
 
-    qDebug() << Q_FUNC_INFO << "";
-
     for (int i=0; i < PIXEL_VAL_MAX+1; i++)
     {
         LUT[i] = i;
