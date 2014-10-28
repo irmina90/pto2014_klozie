@@ -39,21 +39,34 @@ PNM* Correction::transform()
     }
 
     // Iterate over image space
-    for (int x=0; x<width; x++)
-    {   for (int y=0; y<height; y++)
-        {
-            QRgb pixel = image->pixel(x,y); // Getting the pixel(x,y) value
+    if (image->format() == QImage::Format_Indexed8)
+    {
+        for (int x = 0; x < width; x++)
+            for (int y = 0; y < height; y++)
+            {
+                QRgb pixel = image->pixel(x, y); // Getting the pixel(x,y) value
 
-            int r = qRed(pixel);    // Get the 0-255 value of the R channel
-            int g = qGreen(pixel);  // Get the 0-255 value of the G channel
-            int b = qBlue(pixel);   // Get the 0-255 value of the B channel
-            r = LUT[r];
-            g = LUT[g];
-            b = LUT[b];
-            QColor newPixel = QColor(r,g,b);
-            newImage->setPixel(x,y,newPixel.rgb());
-        }
-    }
+                int l = qGray(pixel);
+                newImage->setPixel(x, y, LUT[l]);
+            }
 
-    return newImage;
-}
+    } else if (image->format() == QImage::Format_RGB32)
+      {
+        for (int x=0; x<width; x++)
+           for (int y=0; y<height; y++)
+            {
+                QRgb pixel = image->pixel(x,y); // Getting the pixel(x,y) value
+
+                int r = qRed(pixel);    // Get the 0-255 value of the R channel
+                int g = qGreen(pixel);  // Get the 0-255 value of the G channel
+                int b = qBlue(pixel);   // Get the 0-255 value of the B channel
+                r = LUT[r];
+                g = LUT[g];
+                b = LUT[b];
+                QColor newPixel = QColor(r,g,b);
+                newImage->setPixel(x,y,newPixel.rgb());
+            }
+
+      }
+        return newImage;
+     }
