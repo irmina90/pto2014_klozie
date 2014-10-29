@@ -103,9 +103,7 @@ QRgb Transformation::getPixel(int x, int y, Mode mode)
  */
 QRgb Transformation::getPixelCyclic(int x, int y)
 {
-    qDebug() << Q_FUNC_INFO << "Not implemented yet!";
-
-    return image->pixel(x,y);
+    return image->pixel(x%image->width(), y%image->height());
 }
 
 /**
@@ -114,7 +112,10 @@ QRgb Transformation::getPixelCyclic(int x, int y)
   */
 QRgb Transformation::getPixelNull(int x, int y)
 {
-    qDebug() << Q_FUNC_INFO << "Not implemented yet!";
+    if(x < 0 || y < 0 || image->width() <= x || image->height() <= y)
+    {
+      return qRgb(0,0,0);
+    }
 
     return image->pixel(x,y);
 }
@@ -126,7 +127,23 @@ QRgb Transformation::getPixelNull(int x, int y)
   */
 QRgb Transformation::getPixelRepeat(int x, int y)
 {
-    qDebug() << Q_FUNC_INFO << "Not implemented yet!";
+    if(x < 0)
+    {
+       x = 0;
+    }
+    else if(image->width() <= x)
+    {
+       x = image->width();
+    }
+
+    if(y < 0)
+    {
+       y = 0;
+    }
+    else if(image->height() <= y)
+    {
+       y = image->height();
+    }
 
     return image->pixel(x,y);
 }
@@ -138,8 +155,35 @@ math::matrix<float> Transformation::getWindow(int x, int y, int size,
 {
     math::matrix<float> window(size,size);
 
-    qDebug() << Q_FUNC_INFO << "Not implemented yet!";
+    int v = 0;
+    int n = size/2;
 
+    for (int i = 0; i < size; i++)
+        {
+            for (int j = 0; j < size; j++)
+            {
+                QRgb pixel = getPixel(x - n + i, y - n + j, mode);
+
+                if(channel == RChannel)
+                {
+                    v = qRed(pixel);
+                }
+                else if(channel == GChannel)
+                {
+                    v = qGreen(pixel);
+                }
+                else if(channel == BChannel)
+                {
+                    v = qBlue(pixel);
+                }
+                else if(channel == LChannel)
+                {
+                    v = qGray(pixel);
+                }
+
+                window(i, j) = v;
+            }
+        }
     return window;
 }
 
