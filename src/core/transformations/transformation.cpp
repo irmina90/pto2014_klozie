@@ -133,7 +133,7 @@ QRgb Transformation::getPixelRepeat(int x, int y)
     }
     else if(image->width() <= x)
     {
-       x = image->width();
+       x = image->width()-1;
     }
 
     if(y < 0)
@@ -142,7 +142,7 @@ QRgb Transformation::getPixelRepeat(int x, int y)
     }
     else if(image->height() <= y)
     {
-       y = image->height();
+       y = image->height()-1;
     }
 
     return image->pixel(x,y);

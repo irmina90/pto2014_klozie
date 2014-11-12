@@ -19,20 +19,25 @@ PNM* BlurLinear::transform()
     math::matrix<float> mask(maskSize, maskSize);
 
     for(int i=0; i<maskSize; i++)
+    {
        for(int j=0; j<maskSize; j++)
        {
          mask(i, j) = tmpMask.at(i).toDouble();
        }
+    }
 
-     if(normalize)
-     {
-        float sumMask = sum(mask);
-        for(int i=0; i<maskSize; i++)
-            for(int j=0; j<maskSize; j++)
-            {
+    if(normalize)
+    {
+      float sumMask = sum(mask);
+
+      for(int i=0; i<maskSize; i++)
+      {
+          for(int j=0; j<maskSize; j++)
+           {
                 mask(i, j) = mask(i, j) / sumMask;
-            }
-     }
+           }
+      }
+    }
 
     return convolute(mask, RepeatEdge);
 }
