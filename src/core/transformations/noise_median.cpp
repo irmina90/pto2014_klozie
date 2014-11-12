@@ -17,8 +17,27 @@ PNM* NoiseMedian::transform()
 
     PNM* newImage = new PNM(width, height, image->format());
 
-    qDebug() << Q_FUNC_INFO << "Not implemented yet!";
+    if(image->format() == QImage::Format_Indexed8)
+    {
+       for(int x=0; x<width; x++)
+           for(int y=0; y<height; y++)
+           {
+               int l = getMedian(x, y, LChannel);
+               newImage->setPixel(x, y, l);
+           }
+    }
+    else {
+       for(int x=0; x<width; x++)
+           for(int y=0; y<height; y++)
+           {
+              int r = getMedian(x, y, RChannel);
+              int g = getMedian(x, y, GChannel);
+              int b = getMedian(x, y, BChannel);
 
+              QColor newPixel = QColor(r,g,b);
+              newImage->setPixel(x, y, newPixel.rgb());
+           }
+       }
     return newImage;
 }
 
@@ -26,7 +45,19 @@ int NoiseMedian::getMedian(int x, int y, Channel channel)
 {
     int radius = getParameter("radius").toInt();
 
-    qDebug() << Q_FUNC_INFO << "Not implemented yet!";
+    math::matrix<float> window = getWindow(x, y, (radius*2)+1, channel, RepeatEdge);
 
-    return 0;
+    int size = window.rowno();
+    QVector<float> vector;
+
+    for (int x=0; x<size; x++)
+         for (int y=0; y<size; y++)
+         {
+           vector.append(window(x, y));
+         }
+
+    qSort(vector);
+    float median = vector.at(vector.size()/2);
+
+    return median;
 }
