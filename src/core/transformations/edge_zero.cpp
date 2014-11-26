@@ -23,7 +23,107 @@ PNM* EdgeZeroCrossing::transform()
 
     PNM* newImage = new PNM(width, height, QImage::Format_Indexed8);
 
-    qDebug() << Q_FUNC_INFO << "Not implemented yet!";
+    EdgeLaplaceOfGauss log(image, getSupervisor());
+
+    log.setParameter("size",  getParameter("size"));
+    log.setParameter("sigma", getParameter("sigma"));
+
+    Transformation laplace(log.transform());
+
+    int v0 = 128;
+
+    if (image->format() == QImage::Format_Indexed8)
+    {
+        for (int x=0; x<width; x++)
+            for (int y=0; y<height; y++)
+            {
+                math::matrix<float> window = laplace.getWindow(x, y, size, LChannel, RepeatEdge);
+                int min = PIXEL_VAL_MAX, max = 0;
+
+                for (int i=0; i<size ;i++)
+                        for (int j=0; j<size; j++)
+                        {
+                            if (window(i, j) > max)
+                            {
+                                max = window(i, j);
+                            }
+                            if (window(i, j) < min)
+                            {
+                                min = window(i, j);
+                            }
+                        }
+
+                if (min < (v0 - t) && max > (v0 + t))
+                 {
+                    newImage->setPixel(x, y, window(size/2,size/2));
+                 }
+                else
+                    {
+                      newImage->setPixel(x, y, 0);
+                    }
+             }
+     } else if (image->format() == QImage::Format_RGB32)
+            {
+              for (int x=0; x<width; x++)
+                 for (int y=0; y<height; y++)
+                 {
+                    math::matrix<float> windowR = laplace.getWindow(x, y, size, RChannel, RepeatEdge);
+                    math::matrix<float> windowG = laplace.getWindow(x, y, size, GChannel, RepeatEdge);
+                    math::matrix<float> windowB = laplace.getWindow(x, y, size, BChannel, RepeatEdge);
+
+                    int minR = PIXEL_VAL_MAX, maxR = 0;
+                    int minG = PIXEL_VAL_MAX, maxG = 0;
+                    int minB = PIXEL_VAL_MAX, maxB = 0;
+
+                    for (int i=0; i<size; i++)
+                        for (int j=0; j<size; j++)
+                        {
+                            if (windowR(i, j) > maxR)
+                            {
+                                maxR = windowR(i, j);
+                            }
+                            if (windowR(i, j) < minR)
+                            {
+                                minR = windowR(i,j);
+                            }
+
+                            if (windowG(i, j) > maxG)
+                            {
+                                maxG = windowG(i, j);
+                            }
+                            if (windowG(i, j) < minG)
+                            {
+                                minG = windowG(i,j);
+                            }
+
+                            if (windowB(i, j) > maxB)
+                            {
+                                maxB = windowB(i, j);
+                            }
+                            if (windowB(i, j) < minB)
+                            {
+                                minB = windowB(i,j);
+                            }
+                        }
+
+                    if (minR < (v0 - t) && maxR > (v0 + t))
+                    {
+                        newImage->setPixel(x, y, windowR(size/2,size/2));
+                    }
+                    else if (minG < (v0 - t) && maxG > (v0 + t))
+                    {
+                        newImage->setPixel(x, y, windowG(size/2,size/2));
+                    }
+                    else if (minB < (v0 - t) && maxB > (v0 + t))
+                    {
+                        newImage->setPixel(x, y, windowB(size/2,size/2));
+                    }
+                    else
+                    {
+                        newImage->setPixel(x,y, 0);
+                    }
+                }
+            }
 
     return newImage;
 }
