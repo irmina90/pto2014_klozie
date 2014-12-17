@@ -8,7 +8,7 @@ class EdgeCanny : public Convolution
 public:
     EdgeCanny(PNM*);
     EdgeCanny(PNM*, ImageViewer*);
-
+    int orientation(float);
     virtual PNM* transform();
 
 
